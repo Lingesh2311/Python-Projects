@@ -16,4 +16,4 @@ The project includes the report that discusses about the insights that was devel
 My contribution includes the analysis of the log transformation for feature engineering the data and finding any improvements in accuracy.
 
 ### Results:
-The best average classification accuracy achieved was using Ensemble of decision trees which was around 85%
+The best average classification accuracy achieved was using Ensemble of decision trees which was around **80%**.
