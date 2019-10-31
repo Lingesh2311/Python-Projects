@@ -1,4 +1,4 @@
-## Sentiment Analysis of Company Review
+## Sentiment Analysis of Company Reviews
 
 Kaggle Dataset - [Link](https://www.kaggle.com/fireball684/hackerearthericsson)
 
