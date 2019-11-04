@@ -1,5 +1,3 @@
-from initial import df
-
 # Gensim & nltk imports
 import gensim, spacy, logging, warnings
 import gensim.corpora as corpora
@@ -11,6 +9,10 @@ nltk.download('stopwords')
 import re
 import warnings
 import sys
+import pandas as pd
+
+path = 'data/train.csv'
+df = pd.read_csv(path)
 
 # Wordcloud imports
 from matplotlib import pyplot as plt
