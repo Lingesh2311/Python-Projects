@@ -1,3 +1,5 @@
+from initial import df
+
 # Gensim & nltk imports
 import gensim, spacy, logging, warnings
 import gensim.corpora as corpora
@@ -14,7 +16,7 @@ import sys
 from matplotlib import pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import matplotlib.colors as mcolors
-%matplotlib inline
+# ! %matplotlib inline
 
 # Final LDA model
 from pprint import pprint
@@ -22,7 +24,7 @@ from time import time
 from gensim.test.utils import datapath
 import gensim.models.ldamodel as lda
 
-!{sys.executable} -m spacy download en
+# !{sys.executable} -m spacy download en
 warnings.filterwarnings("ignore")
 stop = stopwords.words('english')
 stop.extend(['from', 'subject', 're', 'edu', 'use', 'not', 'would', 'say', 'could', '_',\
@@ -40,7 +42,7 @@ def sent_to_words(sentences):
         yield(sent)  
 
 
-def create_data_words(reviews):
+def create_data_words(val):
   #  Each review is taken and split into words after cleaning and preprocessing
   data = df[val].tolist()
   data_words = list(sent_to_words(data))
@@ -66,7 +68,7 @@ def process_words(texts, bigram_mod, trigram_mod, stop_words=stop, allowed_posta
     texts = [bigram_mod[doc] for doc in texts]
     texts = [trigram_mod[bigram_mod[doc]] for doc in texts]
     texts_out = []
-    nlp = spacy.load('en', disable=['parser', 'ner'])
+    nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
     for sent in texts:
         doc = nlp(" ".join(sent)) 
         texts_out.append([token.lemma_ for token in doc if token.pos_ in allowed_postags])
@@ -76,7 +78,7 @@ def process_words(texts, bigram_mod, trigram_mod, stop_words=stop, allowed_posta
 
 
 # Wordcloud of generated Topics
-def plot_wordcloud(filename):
+def plot_wordcloud(filename, lda_model):
   cols = [color for name, color in mcolors.TABLEAU_COLORS.items()]
   cloud = WordCloud(stopwords=stop,
                     background_color='white',
@@ -87,7 +89,7 @@ def plot_wordcloud(filename):
                     color_func=lambda *args, **kwargs: cols[i],
                     prefer_horizontal=1.0)
   print(f'10 Topics for {filename}')
-  lda_model = lda.LdaModel.load('LDA '+filename+'.model')
+  # lda_model = lda.LdaModel.load('LDA '+filename+'.model')
   topics = lda_model.show_topics(formatted=False)
   fig, axes = plt.subplots(5, 2, figsize=(30,30), sharex=True, sharey=True)
 
@@ -129,24 +131,25 @@ def LDA_generator(content, data_ready, random_state, update_every, filename):
   pprint(lda_model.print_topics())
   print(f'Plotting the Wordcloud now..')
   plot_wordcloud(filename=filename,lda_model=lda_model)
+  return lda_model
 
-
-# Main Implementation of the Analysis - Plotting topic-wise most used words
-for val, title in zip(['positives', 'negatives'], ['Postive Reviews', 'Negative Reviews']):
-  print(f'Working on {title}')
-  # Initial cleaning - STEP A
-  print(f'Creating the clean sentences for {title}')
-  data_words = create_data_words(val)
-  print('Done!')
-  # Generating the Gram model - STEP B
-  print(f'Generating the Gram models')
-  bigram_model, trigram_model = generate_gram_model(data_words)
-  print('Done!')
-  # Processing the reviews - STEP C
-  print(f'Processing the clean sentences for {title}')
-  data_ready = process_words(data_words, bigram_mod=bigram_model, trigram_mod=trigram_model)
-  print('Done!')
-  print(f'Creating the topics for {title}')
-  LDA_generator(content=df[val], data_ready=data_ready, random_state=100, update_every=1, filename=title)
-  print('Done!')
-  print('*'*80)
+if __name__ == "__main__":
+  for val, title in zip(['positives', 'negatives'], ['Postive Reviews', 'Negative Reviews']):
+    print(f'Working on {title}')
+    # Initial cleaning - STEP A
+    print(f'Creating the clean sentences for {title}')
+    data_words = create_data_words(val)
+    print('Done!')
+    # Generating the Gram model - STEP B
+    print(f'Generating the Gram models')
+    bigram_model, trigram_model = generate_gram_model(data_words)
+    print('Done!')
+    # Processing the reviews - STEP C
+    print(f'Processing the clean sentences for {title}')
+    data_ready = process_words(data_words, bigram_mod=bigram_model, trigram_mod=trigram_model)
+    print('Done!')
+    print(f'Creating the topics for {title}')
+    LDA_generator(content=df[val], data_ready=data_ready, random_state=100, update_every=1, filename=title)
+    print('Done!')
+    print('*'*80)
+  
