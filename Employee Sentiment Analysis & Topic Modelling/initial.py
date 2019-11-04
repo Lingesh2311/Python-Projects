@@ -1,5 +1,6 @@
+import pandas as pd
+
 def initial(): 
-    import pandas as pd
     path = 'data/train.csv'
     df = pd.read_csv(path)
     print(df.head(5))
@@ -11,6 +12,6 @@ def initial():
     for rat in ratings:
         print(f"{rat} : {sorted(df[rat].unique())}")
 
+
 if __name__ == "__main__":
     initial()
-    return True
