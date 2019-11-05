@@ -7,6 +7,7 @@ from bokeh.models import Label
 from bokeh.io import output_notebook
 import numpy as np
 import pandas as pd
+from gensim import models
 
 for val, title in zip(['positives', 'negatives'], ['Positive Reviews', 'Negative Reviews']):
     if val=='negatives':
@@ -26,12 +27,13 @@ for val, title in zip(['positives', 'negatives'], ['Positive Reviews', 'Negative
     print('Done!')
     # Loading the model - STEP D
     print(f'Loading the model for {title}')
+    fpath = 'model/LDAmodel'+title+'.model'
+    lda_model = models.LdaModel.load(fpath)
     print('Done!')
-    print(f'Creating the topics for {title}')
-    lda_model = LDA_generator(content=df[val], data_ready=data_ready, random_state=100, update_every=1, filename=title)
-    print('Done!')
+    print('Creating the Topics')
     id2word = corpora.Dictionary(data_ready)
     corpus = [id2word.doc2bow(text) for text in data_ready]
+    print('Done!')
     # Get topic weights
     print('Getting the topic weights')
     topic_weights = []
