@@ -131,6 +131,11 @@ def LDA_generator(content, data_ready, random_state, update_every, filename):
  
   print(f'{filename} Printing now!')
   pprint(lda_model.print_topics())
+  print('Done')
+  fpath = 'model/LDAmodel'+filename+'.model'
+  print('Saving the model at {fpath}')
+  lda_model.save(fpath)
+  print('Saved')
   print(f'Plotting the Wordcloud now..')
   plot_wordcloud(filename=filename,lda_model=lda_model)
   return lda_model
