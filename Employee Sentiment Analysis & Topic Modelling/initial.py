@@ -11,6 +11,7 @@ def initial():
     ratings = df.columns[10:]
     for rat in ratings:
         print(f"{rat} : {sorted(df[rat].unique())}")
+    return df
 
 
 if __name__ == "__main__":
